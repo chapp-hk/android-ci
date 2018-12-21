@@ -1,8 +1,6 @@
 FROM ubuntu:18.04
 LABEL maintainer="Javier Santos"
 
-ENV LANG=en_US.utf8
-
 ENV VERSION_SDK_TOOLS "4333796"
 
 ENV ANDROID_HOME "/sdk"
@@ -23,9 +21,17 @@ RUN apt-get -qq update && \
       lib32ncurses5 \
       lib32z1 \
       unzip \
-      libqt5widgets5\
-      libqt5svg5\
+      libqt5widgets5 \
+      libqt5svg5 \
+      locales \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set the locale
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8 
 
 RUN rm -f /etc/ssl/certs/java/cacerts; \
     /var/lib/dpkg/info/ca-certificates-java.postinst configure
